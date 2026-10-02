@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>InsideIndus — Campus Vitality Smart Navigator</title>
+<meta name="description" content="Ultra-precise indoor campus navigation, live classroom occupancy simulator, empty study room radar, and faculty directory for Indus University." />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "#fff8f6",
+            "surface-dim": "#e8d6d1",
+            "surface-bright": "#fff8f6",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#fff1ed",
+            "surface-container": "#fdeae5",
+            "surface-container-high": "#f7e4df",
+            "surface-container-highest": "#f1dfd9",
+            "primary": "#9f4122",
+            "primary-container": "#ff8a65",
+            "primary-fixed": "#ffdbd0",
+            "secondary": "#3d6846",
+            "secondary-container": "#bcebc0",
+            "secondary-fixed": "#bfeec3",
+            "tertiary": "#58569e",
+            "tertiary-container": "#a5a3f1",
+            "tertiary-fixed": "#e2dfff",
+            "outline": "#89726b",
+            "outline-variant": "#ddc0b8",
+            "on-surface": "#231917",
+            "on-surface-variant": "#56423c",
+            "warm-cream": "#fff8f6",
+            "peach-soft": "#ffe8df",
+            "sage-soft": "#e8f4ed",
+            "terracotta": "#e07a5f",
+            "espresso": "#2d2422"
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          borderRadius: {
+            DEFAULT: "1rem",
+            lg: "1.75rem",
+            xl: "2.5rem",
+            full: "9999px"
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #fff8f6; }
+    ::-webkit-scrollbar-thumb { background: #ddc0b8; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #e07a5f; }
+
+    .dark ::-webkit-scrollbar-track { background: #1a1412; }
+    .dark ::-webkit-scrollbar-thumb { background: #453632; }
+
+    /* Light Theme Campus Vitality Mesh */
+    html:not(.dark) .campus-mesh-bg {
+      background-color: #fff8f6;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(255, 138, 101, 0.16) 0px, transparent 50%),
+        radial-gradient(at 100% 15%, rgba(188, 235, 192, 0.3) 0px, transparent 45%),
+        radial-gradient(at 50% 65%, rgba(226, 223, 255, 0.22) 0px, transparent 50%),
+        radial-gradient(at 15% 95%, rgba(255, 219, 208, 0.25) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Dark Mode Complement */
+    .dark .campus-mesh-bg {
+      background-color: #171110;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(159, 65, 34, 0.25) 0px, transparent 50%),
+        radial-gradient(at 100% 15%, rgba(61, 104, 70, 0.25) 0px, transparent 45%),
+        radial-gradient(at 50% 65%, rgba(88, 86, 158, 0.2) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Soft Warm Cards */
+    html:not(.dark) .warm-card {
+      background: #ffffff;
+      border: 1px solid rgba(221, 192, 184, 0.65);
+      box-shadow: 0 10px 30px -10px rgba(159, 65, 34, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+    html:not(.dark) .warm-card:hover {
+      border-color: #e07a5f;
+      box-shadow: 0 14px 34px -8px rgba(159, 65, 34, 0.16);
+      transform: translateY(-2px);
+    }
+
+    .dark .warm-card {
+      background: #241a18;
+      border: 1px solid rgba(255, 181, 158, 0.15);
+      box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.5);
+    }
+    .dark .warm-card:hover {
+      border-color: #ff8a65;
+      box-shadow: 0 14px 32px -8px rgba(255, 138, 101, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .pastel-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      transition: all 0.2s ease;
+    }
+
+    /* Pulse route line animation */
+    @keyframes dash {
+      to { stroke-dashoffset: -40; }
+    }
+    .animated-route-line {
+      stroke-dasharray: 8 6;
+      animation: dash 1.5s linear infinite;
+    }
+
+    /* Avatar desk transition */
+    .seat-box {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .student-avatar {
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Toast animation */
+    .toast-enter {
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%) scale(0.9); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="campus-mesh-bg text-on-surface dark:text-[#ffede8] font-sans antialiased overflow-x-hidden selection:bg-[#ff8a65] selection:text-white min-h-screen transition-colors duration-300">
+
+<!-- ==================== TOP NAVIGATION ==================== -->
+<nav class="sticky top-0 z-50 bg-[#fff8f6]/90 dark:bg-[#1a1210]/90 backdrop-blur-xl border-b border-[#ddc0b8]/60 dark:border-white/10 px-4 lg:px-10 py-3.5 transition-all duration-300 shadow-sm">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <!-- Brand Logo & Clean Campus Badges -->
+    <a class="flex items-center gap-3.5 group" href="#">
+      <div class="relative">
+        <div class="w-11 h-11 rounded-2xl p-0.5 bg-gradient-to-tr from-[#e07a5f] via-[#ff8a65] to-[#3d6846] shadow-md shadow-[#e07a5f]/20 group-hover:scale-105 transition-transform duration-300">
+          <div class="w-full h-full rounded-[14px] bg-white dark:bg-[#251b18] overflow-hidden flex items-center justify-center p-1">
+            <img alt="InsideIndus Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UD1feWbDOtIKWAElBltbxzFXJ7K4h9sfS2owb-SCZe_AAiJGU-aNvb1xn_kJuE0LaqE766MDAD8u4NvD3bRjfhUGw7gbfQn0SjGvRT96nvCdS-TO8FKecVSeu6WNaZm6s6b8KgeTix-vJ-PoEfHIQug5JLgAJbZf4OAfFDGxf4DCFLiRQrqRMO5WXDdJv8i8Znze5QVr5G7nul5f0iNhVWWUgm7d561yk7Y86TfJdLMIOcfKpZGPS7QNk"/>
+          </div>
+        </div>
+        <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#3d6846] rounded-full border-2 border-white dark:border-[#171110]"></span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-heading font-extrabold text-xl tracking-tight text-[#2d2422] dark:text-[#ffede8] group-hover:text-[#9f4122] dark:group-hover:text-[#ff8a65] transition-colors">InsideIndus</span>
+          <span class="pastel-pill bg-[#ffe8df] text-[#9f4122] border border-[#ffb59e]/50 font-mono text-[10px]">Campus Vitality 🌱</span>
+        </div>
+        <p class="text-[11px] text-[#56423c] dark:text-[#ddc0b8] font-mono">Indus University Smart Directory &amp; Live Occupancy</p>
+      </div>
+    </a>
+
+    <!-- Center Navigation Links -->
+    <div class="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-[#fdeae5]/90 dark:bg-[#2b1f1c] border border-[#ddc0b8]/50 dark:border-white/10 text-xs font-semibold shadow-inner">
+      <a class="nav-link px-4 py-1.5 rounded-full text-white bg-[#9f4122] shadow-sm font-bold transition-all" href="#hero-classroom">Classroom Sim</a>
+      <a class="nav-link px-4 py-1.5 rounded-full text-[#56423c] dark:text-[#ddc0b8] hover:text-[#9f4122] dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 transition-all" href="#campus-map">Floor Directory</a>
+      <a class="nav-link px-4 py-1.5 rounded-full text-[#56423c] dark:text-[#ddc0b8] hover:text-[#9f4122] dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 transition-all flex items-center gap-1.5" href="#study-radar">
+        <span>Study Room Radar</span>
+        <span class="w-2 h-2 rounded-full bg-[#3d6846] animate-pulse"></span>
+      </a>
+      <a class="nav-link px-4 py-1.5 rounded-full text-[#56423c] dark:text-[#ddc0b8] hover:text-[#9f4122] dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 transition-all" href="#faculty-section">Faculty Desks</a>
+    </div>
+
+    <!-- Functional Dark/Light Toggle, Spotter Karma & Nav Button -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Karma Token Display -->
+      <div title="Your Spotter Karma points earned by reporting free slots and verifying study rooms!" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#e8f4ed] dark:bg-[#1f2e22] text-[#3d6846] dark:text-[#bfeec3] border border-[#bfeec3]/60 font-mono text-xs font-bold cursor-pointer hover:scale-105 transition-all" onclick="showToast('⚡ Spotter Karma: ' + userKarma + ' Points! Keep reporting free study slots.')">
+        <i class="w-3.5 h-3.5 text-[#3d6846] dark:text-[#bfeec3]" data-lucide="zap"></i>
+        <span id="header-karma-count">125 Karma</span>
+      </div>
+
+      <!-- Theme Switcher -->
+      <button aria-label="Toggle Dark and Light Mode" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-[#2e201d] hover:bg-[#ffe8df] dark:hover:bg-[#3d2c28] text-[#2d2422] dark:text-[#ffede8] border border-[#ddc0b8] dark:border-white/15 transition-all shadow-sm font-mono text-xs font-bold" id="theme-toggle-btn" onclick="toggleTheme()">
+        <span id="theme-toggle-icon">🌙</span>
+        <span class="hidden sm:inline" id="theme-toggle-label">Dark Mode</span>
+      </button>
+
+      <!-- Instant Nav Button -->
+      <button class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#9f4122] to-[#e07a5f] text-white font-heading font-bold text-xs sm:text-sm shadow-md hover:shadow-lg hover:brightness-105 active:scale-95 transition-all" onclick="document.getElementById('hero-search-bar').focus(); document.getElementById('hero-search-bar').scrollIntoView({behavior: 'smooth'});">
+        <i class="w-4 h-4" data-lucide="compass"></i>
+        <span>Instant Nav</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== HERO SECTION WITH VIBRANT CAMPUS ART ==================== -->
+<section class="relative pt-10 pb-16 lg:py-16 overflow-hidden border-b border-[#ddc0b8]/40 dark:border-white/10" id="hero-classroom">
+  <div class="max-w-7xl mx-auto px-4 lg:px-8 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-12">
+      <!-- Left 7 Cols: Headlines & Quick Search -->
+      <div class="lg:col-span-7 text-center lg:text-left">
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 mb-4">
+          <div class="pastel-pill bg-[#e8f4ed] text-[#3d6846] border border-[#bfeec3]">
+            <span class="w-2 h-2 rounded-full bg-[#3d6846] animate-ping"></span>
+            Live Campus Navigator
+          </div>
+          <div class="pastel-pill bg-[#ffe8df] text-[#9f4122] border border-[#ffb59e]">
+            Bhanwar &amp; Main Campus
+          </div>
+          <div class="pastel-pill bg-[#e2dfff] text-[#58569e] border border-[#c3c0ff]">
+            Zero missed lectures ⚡
+          </div>
+        </div>
+
+        <h1 class="font-heading text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight text-[#2d2422] dark:text-[#ffede8] leading-[1.12] mb-4">
+          Find Any Room &amp; Desk. <br/>
+          <span class="bg-gradient-to-r from-[#9f4122] via-[#e07a5f] to-[#3d6846] bg-clip-text text-transparent underline decoration-[#ff8a65]/40 decoration-wavy underline-offset-8">
+            Effortless Campus Wayfinding.
+          </span>
+        </h1>
+        <p class="text-[#56423c] dark:text-[#ddc0b8] text-sm sm:text-base font-normal leading-relaxed mb-7 max-w-xl mx-auto lg:mx-0">
+          Ultra-precise classroom navigation, direct cabins like <span class="text-[#9f4122] dark:text-[#ff8a65] font-semibold underline decoration-dotted cursor-pointer" onclick="openDirectionsModal('B-201')">Prof. Palak Shah (Lab B-201, 2nd Floor)</span>, and empty study room radar across Bhanwar &amp; Main Building.
+        </p>
+
+        <!-- Floating Smart Search Pill -->
+        <div class="relative max-w-xl mx-auto lg:mx-0 group mb-5">
+          <div class="relative flex items-center bg-white dark:bg-[#251b18] border-2 border-[#ddc0b8] dark:border-white/20 rounded-2xl p-2 sm:p-2.5 shadow-xl transition-all group-focus-within:border-[#9f4122] group-focus-within:ring-4 group-focus-within:ring-[#ff8a65]/20">
+            <div class="pl-3 pr-2 text-[#9f4122] dark:text-[#ff8a65]">
+              <i class="w-5 h-5" data-lucide="search"></i>
+            </div>
+            <input class="w-full bg-transparent text-[#2d2422] dark:text-white placeholder-[#89726b] dark:placeholder-slate-400 text-sm focus:outline-none font-medium px-2" id="hero-search-bar" onkeyup="handleGlobalSearch(this.value)" placeholder="Search hall (LH-22, LH-35), Prof. Palak Shah, Lab B-201..." type="text"/>
+            <button class="px-4 sm:px-5 py-2.5 bg-gradient-to-r from-[#9f4122] to-[#e07a5f] hover:brightness-105 text-white font-heading font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5 whitespace-nowrap" onclick="executeSearch()">
+              <span>Find Room</span>
+              <i class="w-4 h-4" data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Prompt Chips -->
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 text-xs font-mono text-[#56423c] dark:text-[#ddc0b8]">
+          <span class="text-[#89726b] dark:text-slate-400 font-bold uppercase text-[10px]">Quick Anchors:</span>
+          <button class="px-3 py-1 rounded-xl bg-[#ffe8df] text-[#9f4122] hover:bg-[#ffdbd0] border border-[#ffb59e] transition font-semibold flex items-center gap-1" onclick="quickAnchorSearch('Prof. Palak Shah')">
+            <span>✨ Prof. Palak Shah (B-201)</span>
+          </button>
+          <button class="px-3 py-1 rounded-xl bg-white dark:bg-white/5 hover:bg-[#e8f4ed] text-[#3d6846] dark:text-[#bfeec3] border border-[#ddc0b8]/60 dark:border-white/10 transition font-medium" onclick="quickAnchorSearch('LH-22')">LH-22 (2nd Floor)</button>
+          <button class="px-3 py-1 rounded-xl bg-white dark:bg-white/5 hover:bg-[#e2dfff] text-[#58569e] dark:text-[#c3c0ff] border border-[#ddc0b8]/60 dark:border-white/10 transition font-medium" onclick="quickAnchorSearch('Dr. Nilesh Patel')">CSE HOD Office</button>
+          <button class="px-3 py-1 rounded-xl bg-white dark:bg-white/5 hover:bg-[#fdeae5] text-[#9f4122] dark:text-[#ffb59e] border border-[#ddc0b8]/60 dark:border-white/10 transition font-medium" onclick="quickAnchorSearch('Central Library')">Central Library 📖</button>
+        </div>
+      </div>
+
+      <!-- Right 5 Cols: Warm Campus Vitality Classroom Art -->
+      <div class="lg:col-span-5 flex flex-col items-center justify-center relative">
+        <div class="relative w-full max-w-md group">
+          <!-- Subtle aesthetic background glow -->
+          <div class="absolute -inset-2 rounded-[2rem] bg-gradient-to-tr from-[#ffb59e] via-[#bcebc0] to-[#e2dfff] opacity-60 blur-lg group-hover:opacity-85 transition-opacity duration-500"></div>
+          <div class="relative rounded-[1.75rem] bg-white/90 dark:bg-[#231917]/95 p-2.5 backdrop-blur-xl border border-white/60 dark:border-white/15 shadow-2xl overflow-hidden transition-all duration-300">
+            <div class="relative rounded-2xl overflow-hidden aspect-[16/10] sm:aspect-[16/10]">
+              <img alt="Students studying collaboratively inside sunlit modern university classroom" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida/AEtjO1WoPv2UnDjYankcInGwLE0DJw8v57IlyjrN5p3THFoYZsuxamQuirPmKcxvzTquEH4VleujtTPKoXnrGNik2smqDdi33HVpySDnaQkQAnCmx95xprqEbvJCusR4Db2Rg8OVdO9SCRxN8UpC3ywebMPIbvem8CXtXdH-FNi3Hxkkz-DfOcJGbA1Yeh8JpxeWzNsxXLsMQLTEJvHU5aRPrC_yssaIGRcCKtGhmK49YuIC3ZQnSafOb8J_khI"/>
+              <!-- Floating corner pill -->
+              <div class="absolute top-3 left-3 pastel-pill bg-white/90 dark:bg-[#1a1210]/90 backdrop-blur-md text-[#2d2422] dark:text-white border border-white/60 dark:border-white/20 shadow-sm text-[11px]">
+                <span class="w-2 h-2 rounded-full bg-[#3d6846] animate-pulse"></span>
+                Live Campus Vibes ✨
+              </div>
+              <div class="absolute bottom-3 right-3 pastel-pill bg-[#9f4122]/90 backdrop-blur-md text-white font-mono text-[10px] px-2.5 py-1">
+                Bhanwar Academic Hub
+              </div>
+            </div>
+            <div class="mt-3 px-3 py-2 flex items-center justify-between text-[#56423c] dark:text-[#ddc0b8] text-xs font-mono">
+              <span class="font-bold flex items-center gap-1.5 text-[#3d6846] dark:text-[#bfeec3]">
+                <i class="w-3.5 h-3.5" data-lucide="sparkles"></i>
+                Study Hive Active
+              </span>
+              <span class="text-[#89726b] dark:text-slate-400">Collaborative • Peer Assisted</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= SCROLL TRIGGER SIMULATION CONTAINER ================= -->
+    <div class="mt-6 rounded-3xl p-6 lg:p-8 relative overflow-hidden bg-white/80 dark:bg-[#201715]/90 backdrop-blur-xl border border-[#ddc0b8]/70 dark:border-white/10 shadow-lg">
+      <!-- Simulation Control Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#ddc0b8]/40 dark:border-white/10">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-3 rounded-full bg-[#3d6846] animate-ping"></span>
+            <h2 class="font-heading font-extrabold text-lg lg:text-xl text-[#2d2422] dark:text-[#ffede8]">Live Classroom Occupancy Simulator</h2>
+            <span class="pastel-pill bg-[#e8f4ed] text-[#3d6846] border border-[#bfeec3] font-mono">Bhanwar LH-18 Simulation</span>
+          </div>
+          <p class="text-xs text-[#56423c] dark:text-[#ddc0b8] mt-1 font-sans">Slide to witness real-time student influx gliding into designated smart desks.</p>
+        </div>
+
+        <!-- Subject Switcher & Influx Range Control -->
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-2 bg-[#fff1ed] dark:bg-[#2d201d] px-3 py-1.5 rounded-2xl border border-[#ddc0b8]/50 dark:border-white/10">
+            <span class="text-[11px] font-mono font-semibold text-[#56423c] dark:text-[#ddc0b8]">Subject:</span>
+            <select id="sim-subject-select" onchange="changeSimSubject(this.value)" class="bg-transparent text-xs font-mono font-bold text-[#9f4122] dark:text-[#ff8a65] focus:outline-none border-none cursor-pointer py-0 pl-1 pr-6">
+              <option value="CSE-202" class="bg-white dark:bg-[#241a18]">CSE-202 Data Structures (Prof. Palak Shah)</option>
+              <option value="CSE-305" class="bg-white dark:bg-[#241a18]">CSE-305 Cloud Architectures (Dr. Nilesh Patel)</option>
+              <option value="ICT-101" class="bg-white dark:bg-[#241a18]">ICT-101 Web Engineering (Prof. Palak Shah)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-3 bg-[#fff1ed] dark:bg-[#2d201d] px-4 py-2 rounded-2xl border border-[#ddc0b8]/50 dark:border-white/10 shadow-inner">
+            <span class="text-xs font-mono text-[#56423c] dark:text-[#ddc0b8] font-semibold">Class Influx:</span>
+            <input class="w-28 lg:w-40 accent-[#9f4122] cursor-pointer" id="influx-range" max="100" min="0" oninput="updateStudentPositions(this.value)" type="range" value="55"/>
+            <span class="text-xs font-mono font-extrabold text-[#9f4122] dark:text-[#ff8a65] w-14 text-right" id="influx-percent">55% Full</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Classroom Canvas -->
+      <div class="relative mt-6 min-h-[420px] rounded-2xl bg-gradient-to-b from-[#fff8f6] to-[#fdeae5] dark:from-[#2a1d1a] dark:to-[#1f1513] border border-[#ddc0b8]/60 dark:border-white/10 overflow-hidden p-4" id="classroom-stage">
+        <!-- Smart Board at Front -->
+        <div class="absolute top-3 left-1/2 -translate-x-1/2 w-11/12 max-w-xl h-12 rounded-xl bg-white dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 flex items-center justify-between px-5 shadow-sm">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#e07a5f] animate-pulse"></span>
+            <span class="font-mono text-xs text-[#9f4122] dark:text-[#ff8a65] font-bold" id="smartboard-title">SMART BOARD: Data Structures &amp; Algorithms (CSE-202)</span>
+          </div>
+          <div class="text-[10px] font-mono text-[#56423c] dark:text-[#ddc0b8] bg-[#fff1ed] dark:bg-white/5 px-2.5 py-1 rounded-md border border-[#ddc0b8]/40" id="smartboard-prof">
+            Prof. Palak Shah Active
+          </div>
+        </div>
+
+        <!-- Left Wing Desks -->
+        <div class="absolute top-20 left-4 sm:left-10 w-[42%] flex flex-col gap-3">
+          <div class="relative h-20 rounded-xl bg-white/90 dark:bg-[#251b18]/90 border border-[#ddc0b8]/60 dark:border-white/10 p-2.5 flex items-center justify-between shadow-sm">
+            <span class="absolute -top-2 left-3 px-2 py-0.5 bg-[#fdeae5] dark:bg-[#1a1210] rounded text-[9px] font-mono text-[#56423c] dark:text-[#ddc0b8] font-bold border border-[#ddc0b8]/40">Row A - Left</span>
+            <div class="relative flex-1 flex flex-col items-center justify-center seat-box cursor-pointer" id="seat-A1" onclick="showSeatInfo(0)">
+              <div class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#e8f4ed] text-[#3d6846]" id="note-A1">Notion notes 💻</div>
+              <div class="student-avatar absolute transition-all duration-500 left-1 top-2 bg-[#3d6846] text-white px-2 py-0.5 rounded-lg font-bold text-[10px] shadow-sm hover:scale-105" id="avatar-1">
+                🧢 Aryan (MacBook)
+              </div>
+            </div>
+            <div class="relative flex-1 flex flex-col items-center justify-center seat-box cursor-pointer" id="seat-A2" onclick="showSeatInfo(1)">
+              <div class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#ffe8df] text-[#9f4122]" id="note-A2">AirPods Max 🎧</div>
+              <div class="student-avatar absolute transition-all duration-500 left-1 top-2 bg-[#e07a5f] text-white px-2 py-0.5 rounded-lg font-bold text-[10px] shadow-sm hover:scale-105" id="avatar-2">
+                ✨ Diya (Lo-Fi)
+              </div>
+            </div>
+          </div>
+
+          <div class="relative h-20 rounded-xl bg-white/90 dark:bg-[#251b18]/90 border border-[#ddc0b8]/60 dark:border-white/10 p-2.5 flex items-center justify-between shadow-sm">
+            <span class="absolute -top-2 left-3 px-2 py-0.5 bg-[#fdeae5] dark:bg-[#1a1210] rounded text-[9px] font-mono text-[#56423c] dark:text-[#ddc0b8] font-bold border border-[#ddc0b8]/40">Row B - Left</span>
+            <div class="relative flex-1 flex flex-col items-center justify-center seat-box cursor-pointer" id="seat-B1" onclick="showSeatInfo(2)">
+              <div class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#e2dfff] text-[#58569e]" id="note-B1">Chai break pending ☕</div>
+              <div class="student-avatar absolute transition-all duration-500 left-1 top-2 bg-[#58569e] text-white px-2 py-0.5 rounded-lg font-bold text-[10px] shadow-sm hover:scale-105" id="avatar-3">
+                🎒 Kabir (Hoodie)
+              </div>
+            </div>
+            <div class="relative flex-1 flex flex-col items-center justify-center seat-box cursor-pointer" id="seat-B2" onclick="showSeatInfo(3)">
+              <div class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#e8f4ed] text-[#3d6846]" id="note-B2">Academic focus ⚡</div>
+              <div class="student-avatar absolute transition-all duration-500 left-1 top-2 bg-[#3d6846] text-white px-2 py-0.5 rounded-lg font-bold text-[10px] shadow-sm hover:scale-105" id="avatar-4">
+                🌸 Ananya (GoodNotes)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Wing Desks -->
+        <div class="absolute top-20 right-4 sm:right-10 w-[42%] flex flex-col gap-3">
+          <div class="relative h-20 rounded-xl bg-white/90 dark:bg-[#251b18]/90 border border-[#ddc0b8]/60 dark:border-white/10 p-2.5 flex items-center justify-between shadow-sm">
+            <span class="absolute -top-2 right-3 px-2 py-0.5 bg-[#fdeae5] dark:bg-[#1a1210] rounded text-[9px] font-mono text-[#56423c] dark:text-[#ddc0b8] font-bold border border-[#ddc0b8]/40">Row A - Right</span>
+            <div class="relative flex-1 flex flex-col items-center justify-center seat-box cursor-pointer" id="seat-A3" onclick="showSeatInfo(4)">
+              <div class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#ffe8df] text-[#9f4122]" id="note-A3">Deploying to Prod 🚀</div>
+              <div class="student-avatar absolute transition-all duration-500 right-1 top-2 bg-[#9f4122] text-white px-2 py-0.5 rounded-lg font-bold text-[10px] shadow-sm hover:scale-105" id="avatar-5">
+                👾 Rohan (Dev)
+              </div>
+            </div>
+            <div class="relative flex-1 flex flex-col items-center justify-center seat-box cursor-pointer" id="seat-A4" onclick="showSeatInfo(5)">
+              <div class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#fdeae5] text-[#9f4122]" id="note-A4">Figma Wireframes 🎨</div>
+              <div class="student-avatar absolute transition-all duration-500 right-1 top-2 bg-[#ff8a65] text-white px-2 py-0.5 rounded-lg font-bold text-[10px] shadow-sm hover:scale-105" id="avatar-6">
+                ✨ Tanya (UI Geek)
+              </div>
+            </div>
+          </div>
+
+          <div class="relative h-20 rounded-xl bg-white/90 dark:bg-[#251b18]/90 border border-[#ddc0b8]/60 dark:border-white/10 p-2.5 flex items-center justify-between shadow-sm">
+            <span class="absolute -top-2 right-3 px-2 py-0.5 bg-[#fdeae5] dark:bg-[#1a1210] rounded text-[9px] font-mono text-[#56423c] dark:text-[#ddc0b8] font-bold border border-[#ddc0b8]/40">Row B - Right</span>
+            <div class="relative flex-1 flex flex-col items-center justify-center seat-box cursor-pointer" id="seat-B3" onclick="showSeatInfo(6)">
+              <div class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#e8f4ed] text-[#3d6846]" id="note-B3">Hackathon Prep 🔥</div>
+              <div class="student-avatar absolute transition-all duration-500 right-1 top-2 bg-[#3d6846] text-white px-2 py-0.5 rounded-lg font-bold text-[10px] shadow-sm hover:scale-105" id="avatar-7">
+                ⚡ Zain (Linux)
+              </div>
+            </div>
+            <div class="relative flex-1 flex flex-col items-center justify-center seat-box cursor-pointer" id="seat-B4" onclick="showSeatInfo(7)">
+              <div class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full bg-[#e2dfff] text-[#58569e]" id="note-B4">Morning Coffee ☕</div>
+              <div class="student-avatar absolute transition-all duration-500 right-1 top-2 bg-[#58569e] text-white px-2 py-0.5 rounded-lg font-bold text-[10px] shadow-sm hover:scale-105" id="avatar-8">
+                🌙 Meera (Sleepy)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Classroom Status Ticker -->
+        <div class="absolute bottom-3 left-4 right-4 bg-white/95 dark:bg-[#1f1513]/95 rounded-xl border border-[#ddc0b8]/60 dark:border-white/10 py-2 px-4 flex flex-col sm:flex-row items-center justify-between text-xs font-mono shadow-sm gap-2">
+          <span class="text-[#3d6846] dark:text-[#bfeec3] font-bold" id="seats-claimed-ticker">● Seats Claimed: 9 / 16 (Class filling up)</span>
+          <span class="text-[#56423c] dark:text-[#ddc0b8]" id="acoustics-ticker">Acoustics: Chill Study Ambience 🎧</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CORE FEATURE 1: CAMPUS MAP DIRECTORY ==================== -->
+<section class="py-16 max-w-7xl mx-auto px-4 lg:px-8" id="campus-map">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="pastel-pill bg-[#e8f4ed] text-[#3d6846] border border-[#bfeec3] font-mono">
+          <i class="w-3 h-3" data-lucide="map-pin"></i>
+          Blueprints &amp; Navigation
+        </span>
+        <span class="pastel-pill bg-[#ffe8df] text-[#9f4122] border border-[#ffb59e] font-mono font-bold">Direct Pathways</span>
+      </div>
+      <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-[#2d2422] dark:text-[#ffede8] tracking-tight">
+        Campus Floor Navigator
+      </h2>
+      <p class="text-[#56423c] dark:text-[#ddc0b8] mt-1 text-sm">
+        Explore Bhanwar Building (CSE Core) &amp; Main Building (Central Library) with real-time room occupancy and shortest corridors.
+      </p>
+    </div>
+
+    <div class="w-full md:w-80">
+      <div class="relative">
+        <i class="w-4 h-4 text-[#89726b] dark:text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" data-lucide="search"></i>
+        <input class="w-full bg-white dark:bg-[#251b18] border border-[#ddc0b8] dark:border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#2d2422] dark:text-white placeholder-[#89726b] dark:placeholder-slate-400 focus:outline-none focus:border-[#9f4122] transition shadow-sm" id="quick-search-input" oninput="filterCards(this.value)" placeholder="Filter room (LH-22, Palak Shah, Lab)..." type="text"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Building Tabs -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="cursor-pointer p-4 rounded-2xl border-2 transition-all bg-white dark:bg-[#241a18] border-[#9f4122] shadow-sm flex items-center justify-between" id="bhanwar-tab" onclick="switchBuilding('bhanwar')">
+      <div>
+        <h3 class="font-heading font-extrabold text-base text-[#2d2422] dark:text-white">Bhanwar Building (Active)</h3>
+        <p class="text-xs text-[#56423c] dark:text-[#ddc0b8]">Ground to 5th Floor • 50 Lecture Halls • Labs &amp; Prof. Palak Shah</p>
+      </div>
+      <span class="text-xs font-mono text-[#9f4122] dark:text-[#ff8a65] font-bold">CSE Hub</span>
+    </div>
+    <div class="cursor-pointer p-4 rounded-2xl border-2 transition-all bg-[#fff1ed] dark:bg-[#1a1210] border-[#ddc0b8]/50 dark:border-white/10 flex items-center justify-between" id="main-tab" onclick="switchBuilding('main')">
+      <div>
+        <h3 class="font-heading font-extrabold text-base text-[#2d2422] dark:text-white">Main Building</h3>
+        <p class="text-xs text-[#56423c] dark:text-[#ddc0b8]">2nd Floor • Central University Library • Quiet Reading Desks</p>
+      </div>
+      <span class="text-xs font-mono text-[#58569e] dark:text-[#c3c0ff] font-bold">Library</span>
+    </div>
+  </div>
+
+  <!-- Floor Pills -->
+  <div class="flex flex-wrap items-center gap-2 mb-6" id="floor-pills-container">
+    <span class="text-xs font-mono text-[#89726b] dark:text-[#ddc0b8] font-bold uppercase mr-2">Select Floor:</span>
+    <button class="floor-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-white dark:bg-white/5 hover:bg-[#ffe8df] text-[#56423c] dark:text-slate-300 border border-[#ddc0b8]/50 transition" onclick="setFloor(0)">Ground (0)</button>
+    <button class="floor-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-white dark:bg-white/5 hover:bg-[#ffe8df] text-[#56423c] dark:text-slate-300 border border-[#ddc0b8]/50 transition" onclick="setFloor(1)">1st Floor</button>
+    <button class="floor-btn active-floor px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-[#9f4122] text-white shadow-sm" onclick="setFloor(2)">2nd Floor (Prof. Palak Shah)</button>
+    <button class="floor-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-white dark:bg-white/5 hover:bg-[#ffe8df] text-[#56423c] dark:text-slate-300 border border-[#ddc0b8]/50 transition" onclick="setFloor(3)">3rd Floor</button>
+    <button class="floor-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-white dark:bg-white/5 hover:bg-[#ffe8df] text-[#56423c] dark:text-slate-300 border border-[#ddc0b8]/50 transition" onclick="setFloor(4)">4th Floor (HOD)</button>
+    <button class="floor-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-white dark:bg-white/5 hover:bg-[#ffe8df] text-[#56423c] dark:text-slate-300 border border-[#ddc0b8]/50 transition" onclick="setFloor(5)">5th Floor</button>
+  </div>
+
+  <!-- Room Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="rooms-grid">
+    <!-- Dynamic Cards Injected via JavaScript -->
+  </div>
+</section>
+
+<!-- ==================== CORE FEATURE 2: EMPTY STUDY ROOM RADAR ==================== -->
+<section class="py-16 bg-[#fff1ed]/70 dark:bg-[#1c1412] border-y border-[#ddc0b8]/40 dark:border-white/10" id="study-radar">
+  <div class="max-w-7xl mx-auto px-4 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="pastel-pill bg-[#e2dfff] text-[#58569e] border border-[#c3c0ff] font-mono">
+            Study Room Radar
+          </span>
+          <span class="pastel-pill bg-[#e8f4ed] text-[#3d6846] border border-[#bfeec3] font-mono">Quiet Study Havens 🌱</span>
+        </div>
+        <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-[#2d2422] dark:text-[#ffede8] tracking-tight">
+          Empty Study Room Radar
+        </h2>
+        <p class="text-[#56423c] dark:text-[#ddc0b8] mt-1 text-sm">
+          Never walk into an awkward lecture again. See live vacant halls verified by students with karma streaks.
+        </p>
+      </div>
+
+      <button class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#3d6846] to-[#416c4a] text-white font-heading font-bold text-xs sm:text-sm shadow-md hover:brightness-105 transition-all flex items-center gap-2 active:scale-95" onclick="openReportSlotModal()">
+        <i class="w-4 h-4" data-lucide="plus-circle"></i>
+        <span>Report Free Slot</span>
+      </button>
+    </div>
+
+    <!-- Live Study Radar Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="radar-cards-grid">
+      <!-- Radar cards dynamically populated by script -->
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CORE FEATURE 3: FACULTY & LAB QUICK DIRECTORY ==================== -->
+<section class="py-16 max-w-7xl mx-auto px-4 lg:px-8" id="faculty-section">
+  <div class="mb-8">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="pastel-pill bg-[#e8f4ed] text-[#3d6846] border border-[#bfeec3] font-mono">
+        <i class="w-3 h-3" data-lucide="users"></i>
+        Direct Anchors
+      </span>
+    </div>
+    <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-[#2d2422] dark:text-[#ffede8] tracking-tight">
+      Faculty Cabins &amp; Lab Incharges
+    </h2>
+    <p class="text-[#56423c] dark:text-[#ddc0b8] mt-1 text-sm">
+      Instantly pinpoint staff rooms, HOD chambers, and practical laboratory instructors.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Prof. Palak Shah -->
+    <div class="warm-card rounded-2xl p-6 border-2 !border-[#9f4122] transition-all">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-xl bg-[#ffe8df] text-[#9f4122] flex items-center justify-center font-heading font-extrabold text-base border border-[#ffb59e]">
+          ICT
+        </div>
+        <div>
+          <h4 class="font-heading font-extrabold text-[#2d2422] dark:text-white text-base">Prof. Palak Shah</h4>
+          <p class="text-xs text-[#9f4122] dark:text-[#ff8a65] font-mono font-bold">ICT Faculty Coordinator</p>
+        </div>
+      </div>
+      <div class="space-y-1.5 text-xs font-mono text-[#56423c] dark:text-[#ddc0b8] mb-4">
+        <p><b class="text-[#89726b] dark:text-slate-400">Cabin:</b> Lab B-201, 2nd Floor, Bhanwar</p>
+        <p><b class="text-[#89726b] dark:text-slate-400">Area:</b> Web Architectures &amp; Cloud</p>
+        <p><b class="text-[#3d6846] dark:text-[#bfeec3]">Hours:</b> Mon to Fri: 11:30 AM – 1:00 PM</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="flex-1 py-2.5 rounded-xl bg-[#ffe8df] hover:bg-[#9f4122] text-[#9f4122] hover:text-white font-mono text-xs font-bold transition border border-[#ffb59e] active:scale-95" onclick="openDirectionsModal('B-201')">
+          Locate Lab B-201 Desk 📍
+        </button>
+        <button class="px-3 py-2.5 rounded-xl bg-[#9f4122] text-white hover:bg-[#e07a5f] font-mono text-xs font-bold transition active:scale-95" title="Book Consultation Slot" onclick="openFacultyBookingModal('Prof. Palak Shah', 'Lab B-201')">
+          Book 📅
+        </button>
+      </div>
+    </div>
+
+    <!-- Dr. Nilesh Patel -->
+    <div class="warm-card rounded-2xl p-6 transition-all">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-xl bg-[#e8f4ed] text-[#3d6846] flex items-center justify-center font-heading font-extrabold text-base border border-[#bfeec3]">
+          HOD
+        </div>
+        <div>
+          <h4 class="font-heading font-extrabold text-[#2d2422] dark:text-white text-base">Dr. Nilesh Patel</h4>
+          <p class="text-xs text-[#3d6846] dark:text-[#bfeec3] font-mono font-bold">Head of Department • CSE</p>
+        </div>
+      </div>
+      <div class="space-y-1.5 text-xs font-mono text-[#56423c] dark:text-[#ddc0b8] mb-4">
+        <p><b class="text-[#89726b] dark:text-slate-400">Cabin:</b> 4th Floor, Bhanwar (HOD Wing)</p>
+        <p><b class="text-[#89726b] dark:text-slate-400">Area:</b> Distributed AI &amp; Cloud</p>
+        <p><b class="text-[#9f4122] dark:text-[#ff8a65]">Hours:</b> Mon &amp; Thu: 2:30 PM – 4:00 PM</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="flex-1 py-2.5 rounded-xl bg-white dark:bg-white/5 hover:bg-[#e8f4ed] text-[#3d6846] dark:text-[#bfeec3] font-mono text-xs font-bold transition border border-[#ddc0b8]/60 dark:border-white/10 active:scale-95" onclick="openDirectionsModal('HOD-CSE')">
+          Locate HOD Office 📍
+        </button>
+        <button class="px-3 py-2.5 rounded-xl bg-[#3d6846] text-white hover:bg-[#416c4a] font-mono text-xs font-bold transition active:scale-95" title="Book HOD Consultation" onclick="openFacultyBookingModal('Dr. Nilesh Patel', 'HOD Office 4th Floor')">
+          Book 📅
+        </button>
+      </div>
+    </div>
+
+    <!-- Central Library Helpdesk -->
+    <div class="warm-card rounded-2xl p-6 transition-all">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-xl bg-[#e2dfff] text-[#58569e] flex items-center justify-center font-heading font-extrabold text-lg border border-[#c3c0ff]">
+          📚
+        </div>
+        <div>
+          <h4 class="font-heading font-extrabold text-[#2d2422] dark:text-white text-base">Central Library Helpdesk</h4>
+          <p class="text-xs text-[#58569e] dark:text-[#c3c0ff] font-mono font-bold">Main Building • 2nd Floor</p>
+        </div>
+      </div>
+      <div class="space-y-1.5 text-xs font-mono text-[#56423c] dark:text-[#ddc0b8] mb-4">
+        <p><b class="text-[#89726b] dark:text-slate-400">Location:</b> Main Building 2nd Floor</p>
+        <p><b class="text-[#89726b] dark:text-slate-400">Timings:</b> Open 8:00 AM – 8:00 PM</p>
+        <p><b class="text-[#3d6846] dark:text-[#bfeec3]">Facility:</b> Quiet Cubicles, Book Issue</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="flex-1 py-2.5 rounded-xl bg-[#e2dfff] hover:bg-[#58569e] hover:text-white text-[#58569e] font-mono text-xs font-bold transition border border-[#c3c0ff] active:scale-95" onclick="openDirectionsModal('LIB-EAST')">
+          Locate Library 📍
+        </button>
+        <button class="px-3 py-2.5 rounded-xl bg-[#58569e] text-white hover:bg-[#484685] font-mono text-xs font-bold transition active:scale-95" onclick="openClaimSeatModal('Central Library East Wing')">
+          Reserve 🪑
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MULTI-COLUMN FOOTER ==================== -->
+<footer class="border-t border-[#ddc0b8]/50 dark:border-white/10 bg-white/70 dark:bg-[#171110] py-12 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-[#ddc0b8]/40 dark:border-white/10">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="font-heading font-extrabold text-[#2d2422] dark:text-[#ffede8] text-xl">InsideIndus</span>
+          <span class="pastel-pill bg-[#ffe8df] text-[#9f4122] border border-[#ffb59e] text-[10px]">Vitality Edition</span>
+        </div>
+        <p class="text-xs text-[#56423c] dark:text-[#ddc0b8] max-w-sm mb-4 leading-relaxed">
+          Smart indoor spatial companion for Indus University students, scholars, and visiting faculty. Made with ☕ and zero missed lectures.
+        </p>
+        <p class="text-xs font-mono text-[#89726b] dark:text-slate-400">InsideIndus © 2026. All campus rights reserved.</p>
+      </div>
+      <div>
+        <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-[#2d2422] dark:text-[#ffede8] mb-3">Direct Navigation</h5>
+        <ul class="space-y-2 text-xs font-sans text-[#56423c] dark:text-[#ddc0b8]">
+          <li><a class="hover:text-[#9f4122] transition" href="#hero-classroom">Classroom Simulator</a></li>
+          <li><a class="hover:text-[#9f4122] transition" href="#campus-map">Bhanwar Floor Directory</a></li>
+          <li><a class="hover:text-[#9f4122] transition" href="#study-radar">Study Room Radar</a></li>
+          <li><a class="hover:text-[#9f4122] transition" href="#faculty-section">Prof. Palak Shah Desk</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-[#2d2422] dark:text-[#ffede8] mb-3">Emergency &amp; Campus Info</h5>
+        <ul class="space-y-2 text-xs font-mono text-[#56423c] dark:text-[#ddc0b8]">
+          <li>Campus Ext: <span class="text-[#9f4122] dark:text-[#ff8a65] font-bold">#2401</span></li>
+          <li>Security Desk: <span class="text-[#9f4122] dark:text-[#ff8a65] font-bold">+91 79 2900 1122</span></li>
+          <li>ICT Helpdesk: <span class="text-[#3d6846] dark:text-[#bfeec3] font-bold">Lab B-201 Wing</span></li>
+          <li>Main Library: <span class="text-[#58569e] dark:text-[#c3c0ff] font-bold">Level 2</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-[#89726b] dark:text-slate-400 gap-2">
+      <span>Indus University Campus • Rancharda, Via Thaltej, Ahmedabad</span>
+      <div class="flex items-center gap-4">
+        <a class="hover:underline cursor-pointer" onclick="showToast('Privacy Policy: All campus location data is rendered locally on your browser.')">Privacy Policy</a>
+        <span>•</span>
+        <a class="hover:underline cursor-pointer" onclick="showToast('Downloading Bhanwar Building High-Res PDF Blueprint...')">Campus Map PDF</a>
+        <span>•</span>
+        <a class="hover:underline cursor-pointer" onclick="showToast('Contacting Student Council Representatives...')">Student Council</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== MODAL 1: INTERACTIVE WAYFINDING / DIRECTIONS MODAL ==================== -->
+<div id="navigation-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md hidden transition-opacity duration-300">
+  <div class="bg-white dark:bg-[#231917] border border-[#ddc0b8] dark:border-white/15 rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+    <!-- Modal Close Button -->
+    <button onclick="closeDirectionsModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#fff1ed] dark:bg-white/10 flex items-center justify-center text-[#9f4122] dark:text-white hover:scale-110 transition">
+      ✕
+    </button>
+
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-2xl bg-[#ffe8df] text-[#9f4122] flex items-center justify-center font-bold">
+        📍
+      </div>
+      <div>
+        <h3 class="font-heading font-extrabold text-xl text-[#2d2422] dark:text-white" id="modal-room-title">Directions to Lab B-201</h3>
+        <p class="text-xs text-[#56423c] dark:text-[#ddc0b8] font-mono" id="modal-room-subtitle">Prof. Palak Shah Desk • Bhanwar Building 2nd Floor</p>
+      </div>
+    </div>
+
+    <!-- Interactive Visual Floor Plan Diagram SVG -->
+    <div class="my-4 p-4 rounded-2xl bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8]/60 dark:border-white/10 relative overflow-hidden">
+      <div class="flex items-center justify-between text-[11px] font-mono text-[#89726b] dark:text-slate-400 mb-2">
+        <span>BLUEPRINT ROUTE MAP</span>
+        <span class="text-[#3d6846] dark:text-[#bfeec3] font-bold">🚶 1 min 30 sec walk (120m)</span>
+      </div>
+
+      <div class="relative w-full h-44 bg-[#fdeae5]/50 dark:bg-[#271d1b] rounded-xl border border-[#ddc0b8]/40 dark:border-white/10 p-2 flex items-center justify-center">
+        <svg viewBox="0 0 500 200" class="w-full h-full">
+          <!-- Building Outline -->
+          <rect x="20" y="20" width="460" height="160" rx="12" fill="none" stroke="#ddc0b8" stroke-width="2" stroke-dasharray="4 4"/>
+          <!-- Rooms Blocks -->
+          <rect x="30" y="30" width="90" height="55" rx="6" fill="#ffe8df" opacity="0.6"/>
+          <text x="75" y="60" font-size="10" font-family="monospace" font-weight="bold" fill="#9f4122" text-anchor="middle">Main Gate</text>
+
+          <rect x="140" y="30" width="80" height="55" rx="6" fill="#e8f4ed" opacity="0.6"/>
+          <text x="180" y="60" font-size="10" font-family="monospace" font-weight="bold" fill="#3d6846" text-anchor="middle">Lobby</text>
+
+          <rect x="240" y="30" width="80" height="55" rx="6" fill="#e2dfff" opacity="0.6"/>
+          <text x="280" y="60" font-size="10" font-family="monospace" font-weight="bold" fill="#58569e" text-anchor="middle">North Lift</text>
+
+          <rect x="340" y="30" width="130" height="140" rx="8" fill="#9f4122" opacity="0.15" stroke="#9f4122" stroke-width="2"/>
+          <text x="405" y="105" font-size="11" font-family="monospace" font-weight="bold" fill="#9f4122" text-anchor="middle" id="svg-target-label">Lab B-201 Desk</text>
+
+          <!-- Corridor Route Path -->
+          <path d="M 75 85 L 75 140 L 280 140 L 280 100 L 340 100" fill="none" stroke="#e07a5f" stroke-width="4" stroke-linecap="round" class="animated-route-line" />
+          
+          <!-- Start Dot -->
+          <circle cx="75" cy="85" r="6" fill="#9f4122"/>
+          <!-- End Target Dot -->
+          <circle cx="340" cy="100" r="7" fill="#3d6846"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Step-by-Step Directions List -->
+    <div class="space-y-3 my-4 text-xs font-sans text-[#56423c] dark:text-[#ddc0b8]" id="modal-steps-container">
+      <!-- Steps filled by script -->
+    </div>
+
+    <div class="flex items-center justify-between pt-4 border-t border-[#ddc0b8]/40 dark:border-white/10">
+      <span class="text-xs font-mono text-[#89726b] dark:text-slate-400">Direct Waypoint ID: #INDUS-NAV-201</span>
+      <button onclick="copyRouteLink()" class="px-4 py-2 rounded-xl bg-[#ffe8df] text-[#9f4122] font-mono text-xs font-bold hover:bg-[#9f4122] hover:text-white transition active:scale-95">
+        Copy Navigation Path 📋
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL 2: REPORT FREE SLOT MODAL ==================== -->
+<div id="report-slot-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md hidden transition-opacity duration-300">
+  <div class="bg-white dark:bg-[#231917] border border-[#ddc0b8] dark:border-white/15 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+    <button onclick="closeReportSlotModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#fff1ed] dark:bg-white/10 flex items-center justify-center text-[#9f4122] dark:text-white hover:scale-110 transition">
+      ✕
+    </button>
+
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-2xl bg-[#e8f4ed] text-[#3d6846] flex items-center justify-center font-bold text-lg">
+        🌱
+      </div>
+      <div>
+        <h3 class="font-heading font-extrabold text-xl text-[#2d2422] dark:text-white">Report Free Study Slot</h3>
+        <p class="text-xs text-[#3d6846] dark:text-[#bfeec3] font-mono">Earn +25 Spotter Karma tokens for peer verified slots!</p>
+      </div>
+    </div>
+
+    <form onsubmit="handleReportSlotSubmit(event)" class="space-y-4 text-xs font-mono">
+      <div>
+        <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Building</label>
+        <select id="report-bld" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]">
+          <option value="Bhanwar Building">Bhanwar Building (CSE Core)</option>
+          <option value="Main Building">Main Building (Library &amp; Admin)</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Floor</label>
+          <input type="text" id="report-floor" required placeholder="e.g. 2nd Floor" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]"/>
+        </div>
+        <div>
+          <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Room / Hall ID</label>
+          <input type="text" id="report-room" required placeholder="e.g. LH-35 or Lab B-304" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]"/>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Free Until</label>
+          <input type="text" id="report-duration" required placeholder="e.g. 2:30 PM or 1h 30m" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]"/>
+        </div>
+        <div>
+          <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Working Outlets 🔌</label>
+          <input type="number" id="report-outlets" min="0" max="20" value="4" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]"/>
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Atmosphere / Notes</label>
+        <input type="text" id="report-notes" placeholder="e.g. Quiet, AC working, fast 100 Mbps Wi-Fi" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]"/>
+      </div>
+
+      <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#3d6846] to-[#416c4a] text-white font-heading font-bold text-sm shadow-md hover:brightness-105 transition active:scale-95">
+        Submit Report &amp; Claim +25 Karma Tokens ⚡
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== MODAL 3: CLAIM SEAT / STUDY PASS MODAL ==================== -->
+<div id="claim-seat-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md hidden transition-opacity duration-300">
+  <div class="bg-white dark:bg-[#231917] border border-[#ddc0b8] dark:border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+    <button onclick="closeClaimSeatModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#fff1ed] dark:bg-white/10 flex items-center justify-center text-[#9f4122] dark:text-white hover:scale-110 transition">
+      ✕
+    </button>
+
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-2xl bg-[#e2dfff] text-[#58569e] flex items-center justify-center font-bold text-lg">
+        🪑
+      </div>
+      <div>
+        <h3 class="font-heading font-extrabold text-xl text-[#2d2422] dark:text-white" id="claim-modal-room-name">Reserve Study Desk</h3>
+        <p class="text-xs text-[#58569e] dark:text-[#c3c0ff] font-mono">Digital Quiet Zone Pass</p>
+      </div>
+    </div>
+
+    <form onsubmit="handleClaimSeatSubmit(event)" class="space-y-3 text-xs font-mono">
+      <div>
+        <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Student Name</label>
+        <input type="text" id="claim-name" required value="Aryan Patel" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#58569e]"/>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Roll No / ID</label>
+          <input type="text" id="claim-roll" required value="21BCSE042" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#58569e]"/>
+        </div>
+        <div>
+          <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Study Duration</label>
+          <select id="claim-duration" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#58569e]">
+            <option value="45 mins">45 Mins Focus</option>
+            <option value="1.5 hours">1.5 Hours Deep Work</option>
+            <option value="2.5 hours">2.5 Hours Marathon</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#58569e] to-[#716fc2] text-white font-heading font-bold text-sm shadow-md hover:brightness-105 transition active:scale-95">
+        Generate Digital Pass &amp; Lock Desk 🎫
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== MODAL 4: FACULTY CONSULTATION BOOKING MODAL ==================== -->
+<div id="faculty-booking-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md hidden transition-opacity duration-300">
+  <div class="bg-white dark:bg-[#231917] border border-[#ddc0b8] dark:border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+    <button onclick="closeFacultyBookingModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#fff1ed] dark:bg-white/10 flex items-center justify-center text-[#9f4122] dark:text-white hover:scale-110 transition">
+      ✕
+    </button>
+
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-2xl bg-[#ffe8df] text-[#9f4122] flex items-center justify-center font-bold text-lg">
+        📅
+      </div>
+      <div>
+        <h3 class="font-heading font-extrabold text-xl text-[#2d2422] dark:text-white" id="booking-modal-prof-name">Book Consultation</h3>
+        <p class="text-xs text-[#9f4122] dark:text-[#ff8a65] font-mono" id="booking-modal-cabin">Lab B-201 Desk</p>
+      </div>
+    </div>
+
+    <form onsubmit="handleFacultyBookingSubmit(event)" class="space-y-3 text-xs font-mono">
+      <div>
+        <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Student Name &amp; Semester</label>
+        <input type="text" id="booking-student" required value="Priya Sharma (Sem 5 CSE)" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]"/>
+      </div>
+
+      <div>
+        <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Topic / Discussion Purpose</label>
+        <input type="text" id="booking-purpose" required value="Web Tech Project Review &amp; Lab Assignment" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]"/>
+      </div>
+
+      <div>
+        <label class="block font-bold text-[#56423c] dark:text-[#ddc0b8] mb-1">Preferred Time Slot</label>
+        <select id="booking-slot" class="w-full bg-[#fff8f6] dark:bg-[#1a1210] border border-[#ddc0b8] dark:border-white/15 rounded-xl px-3 py-2 text-[#2d2422] dark:text-white focus:outline-none focus:border-[#9f4122]">
+          <option value="11:45 AM - 12:00 PM">Today: 11:45 AM - 12:00 PM</option>
+          <option value="12:15 PM - 12:30 PM">Today: 12:15 PM - 12:30 PM</option>
+          <option value="12:45 PM - 1:00 PM">Today: 12:45 PM - 1:00 PM</option>
+        </select>
+      </div>
+
+      <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#9f4122] to-[#e07a5f] text-white font-heading font-bold text-sm shadow-md hover:brightness-105 transition active:scale-95">
+        Confirm Appointment Slot 📜
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+<!-- ==================== JAVASCRIPT APP LOGIC ==================== -->
+<script>
+  lucide.createIcons();
+
+  // --- STATE MANAGEMENT ---
+  let userKarma = 125;
+  let activeBuilding = 'bhanwar';
+  let activeFloor = 2;
+
+  // Full Campus Rooms Database
+  const ROOMS_DATA = [
+    // Bhanwar Building Floor 0 (Ground)
+    { bld: 'bhanwar', floor: 0, id: 'LH-01', name: 'Main Auditorium', type: 'Auditorium', capacity: 250, status: 'Occupied 🔴', statusBg: 'bg-[#ffe8df] text-[#9f4122] border-[#ffb59e]', info: 'Ground Floor Lobby • HD Sound System & Projection', freeUntil: '4:00 PM', incharge: 'Prof. R. Sharma' },
+    { bld: 'bhanwar', floor: 0, id: 'LH-02', name: 'Canteen Annex Seminar Hall', type: 'Hall', capacity: 80, status: 'Vacant 🟢', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: 'Ground Floor • Near West Exit • High Speed Wi-Fi', freeUntil: '2:30 PM', incharge: 'Student Council' },
+    { bld: 'bhanwar', floor: 0, id: 'B-004', name: 'Robotics & Embedded Systems Lab', type: 'Lab', capacity: 30, status: 'Lab In Progress 🟡', statusBg: 'bg-[#fdeae5] text-[#9f4122] border-[#ffb59e]', info: 'Ground Floor • Microcontroller Workstations', freeUntil: '1:00 PM', incharge: 'Dr. A. Trivedi' },
+
+    // Bhanwar Building Floor 1
+    { bld: 'bhanwar', floor: 1, id: 'LH-12', name: 'Lecture Hall 12', type: 'Lecture Hall', capacity: 60, status: 'Occupied 🔴', statusBg: 'bg-[#ffe8df] text-[#9f4122] border-[#ffb59e]', info: '1st Floor • Math & Statistics (MTH-101)', freeUntil: '1:45 PM', incharge: 'Prof. K. Shah' },
+    { bld: 'bhanwar', floor: 1, id: 'LH-14', name: 'Lecture Hall 14', type: 'Study Haven', capacity: 55, status: 'Vacant 🟢', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: '1st Floor • 6 Working Power Outlets • AC', freeUntil: 'Free for 2 hrs', incharge: 'Open Access', featured: true },
+    { bld: 'bhanwar', floor: 1, id: 'B-105', name: 'Hardware & Circuit Lab', type: 'Lab', capacity: 40, status: 'Vacant 🟢', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: '1st Floor • Digital Logic Trainer Kits', freeUntil: '3:00 PM', incharge: 'Prof. V. Joshi' },
+
+    // Bhanwar Building Floor 2
+    { bld: 'bhanwar', floor: 2, id: 'B-201', name: 'Lab B-201 (Prof. Palak Shah)', type: 'Faculty Cabin & Lab', capacity: 24, status: 'Consultation Active ⚡', statusBg: 'bg-[#ffe8df] text-[#9f4122] border-[#ffb59e]', info: 'ICT Faculty Coordinator Desk • Web Arch & Cloud', freeUntil: 'Hours: 11:30 AM – 1:00 PM', incharge: 'Prof. Palak Shah', featured: true },
+    { bld: 'bhanwar', floor: 2, id: 'LH-22', name: 'LH-22 (Corner Hall)', type: 'Lecture Hall', capacity: 60, status: 'Vacant 🟢', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: '2nd Floor • Air Conditioned • High speed campus Wi-Fi', freeUntil: 'Free until 1:15 PM', incharge: 'Open Access' },
+    { bld: 'bhanwar', floor: 2, id: 'Chem-Lab', name: 'Chemistry Lab', type: 'Lab', capacity: 45, status: 'Lab In Progress 🟡', statusBg: 'bg-[#fdeae5] text-[#9f4122] border-[#ffb59e]', info: 'Dr. Sneha Verma • Polymer Chemistry & Material Science', freeUntil: 'Consultation at 3:00 PM', incharge: 'Dr. Sneha Verma' },
+    { bld: 'bhanwar', floor: 2, id: 'LH-24', name: 'Lecture Hall 24', type: 'Lecture Hall', capacity: 60, status: 'Vacant 🟢', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: '2nd Floor • Dual Projector Setup', freeUntil: 'Free until 3:30 PM', incharge: 'Open Access' },
+
+    // Bhanwar Building Floor 3
+    { bld: 'bhanwar', floor: 3, id: 'LH-28', name: 'Lecture Hall 28', type: 'Lecture Hall', capacity: 50, status: 'Class at 2:00 PM 🟡', statusBg: 'bg-[#ffe8df] text-[#9f4122] border-[#ffb59e]', info: '3rd Floor • 120 Mbps Ultra Wi-Fi • Quiet', freeUntil: '50 mins left', incharge: 'Open Access', featured: true },
+    { bld: 'bhanwar', floor: 3, id: 'B-302', name: 'AI & Machine Learning Innovation Lab', type: 'Lab', capacity: 36, status: 'Occupied 🔴', statusBg: 'bg-[#ffe8df] text-[#9f4122] border-[#ffb59e]', info: 'NVIDIA GPU Workstations • Deep Learning Project', freeUntil: '4:30 PM', incharge: 'Prof. Rakesh Mehta' },
+
+    // Bhanwar Building Floor 4
+    { bld: 'bhanwar', floor: 4, id: 'HOD-CSE', name: 'CSE HOD Chamber', type: 'HOD Office', capacity: 15, status: 'Office Hours Active ⚡', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: '4th Floor HOD Wing • Head of Department CSE', freeUntil: 'Hours: 2:30 PM – 4:00 PM', incharge: 'Dr. Nilesh Patel', featured: true },
+    { bld: 'bhanwar', floor: 4, id: 'B-401', name: 'Cloud Computing & DevOps Lab', type: 'Lab', capacity: 40, status: 'Vacant 🟢', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: '4th Floor • Docker & Kubernetes Clusters', freeUntil: 'Free until 5:00 PM', incharge: 'Prof. S. Dave' },
+
+    // Bhanwar Building Floor 5
+    { bld: 'bhanwar', floor: 5, id: 'B-501', name: 'Research Scholar Workstation', type: 'Research Wing', capacity: 25, status: 'Silent Zone 📖', statusBg: 'bg-[#e2dfff] text-[#58569e] border-[#c3c0ff]', info: '5th Floor • PhD & Masters Thesis Wing', freeUntil: 'Open 24/7', incharge: 'Dean Research' },
+
+    // Main Building Floor 0
+    { bld: 'main', floor: 0, id: 'M-01', name: 'Registrar & Student Affairs Desk', type: 'Admin', capacity: 40, status: 'Open 🟢', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: 'Main Building Ground Floor • Fee & Enrollment', freeUntil: 'Closes 5:00 PM', incharge: 'Registrar Office' },
+
+    // Main Building Floor 1
+    { bld: 'main', floor: 1, id: 'M-102', name: 'Mechanical & Automation Workshop', type: 'Workshop', capacity: 50, status: 'Practical Session 🟡', statusBg: 'bg-[#fdeae5] text-[#9f4122] border-[#ffb59e]', info: 'Main Building 1st Floor • CNC & Lathe Bay', freeUntil: '2:00 PM', incharge: 'Prof. M. Patel' },
+
+    // Main Building Floor 2
+    { bld: 'main', floor: 2, id: 'LIB-EAST', name: 'Central Library East Wing', type: 'Library Wing', capacity: 120, status: 'Strict Silent Zone 📖', statusBg: 'bg-[#e2dfff] text-[#58569e] border-[#c3c0ff]', info: 'Main Building 2nd Floor • 42 Cubicles Vacant • Quiet Reading', freeUntil: 'Open 8:00 AM - 8:00 PM', incharge: 'Chief Librarian', featured: true },
+    { bld: 'main', floor: 2, id: 'LIB-WEST', name: 'Central Library Digital Resource Center', type: 'Digital Lab', capacity: 50, status: 'Vacant 🟢', statusBg: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', info: 'Main Building 2nd Floor • IEEE & ScienceDirect Access', freeUntil: 'Open 8:00 AM - 8:00 PM', incharge: 'Library Helpdesk' },
+
+    // Main Building Floor 3
+    { bld: 'main', floor: 3, id: 'M-301', name: 'University Grand Senate Hall', type: 'Conference', capacity: 180, status: 'Event Scheduled 🔴', statusBg: 'bg-[#ffe8df] text-[#9f4122] border-[#ffb59e]', info: 'Main Building 3rd Floor • Guest Lecture Series', freeUntil: '5:30 PM', incharge: 'Events Desk' }
+  ];
+
+  // Dynamic Empty Study Radar List
+  let RADAR_ITEMS = [
+    { id: 'LH-14', name: 'LH-14', bld: 'Bhanwar 1st Floor', status: 'Empty Now 🟢', statusClass: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]', text: 'Bhanwar 1st Floor • Free for 1h 45m • 6 Outlets Working 🔌', accuracy: '94% Accuracy (28 votes)', votes: 28, emptyBtn: '👍 Empty' },
+    { id: 'LH-28', name: 'LH-28', bld: 'Bhanwar 3rd Floor', status: 'Class at 2:00 PM 🟡', statusClass: 'bg-[#ffe8df] text-[#9f4122] border-[#ffb59e]', text: 'Bhanwar 3rd Floor • 50 mins left • Fast Wi-Fi 120 Mbps 🚀', accuracy: '88% Accuracy (19 votes)', votes: 19, emptyBtn: '👍 Valid' },
+    { id: 'LIB-EAST', name: 'Central Library East Wing', bld: 'Main Building 2nd Floor', status: 'Strict Silent Zone 📖', statusClass: 'bg-[#e2dfff] text-[#58569e] border-[#c3c0ff]', text: 'Main Building 2nd Floor • 42 Cubicles Vacant • Quiet Reading', accuracy: '0 dB Quiet Confirmed', votes: 45, emptyBtn: 'Claim Seat' }
+  ];
+
+  // Student Profiles for Classroom Simulator
+  const STUDENTS = [
+    { name: '🧢 Aryan (MacBook)', badge: 'Notion notes 💻', color: 'bg-[#3d6846]', noteColor: 'bg-[#e8f4ed] text-[#3d6846]', details: 'B.Tech CSE • Working on Binary Search Trees' },
+    { name: '✨ Diya (Lo-Fi)', badge: 'AirPods Max 🎧', color: 'bg-[#e07a5f]', noteColor: 'bg-[#ffe8df] text-[#9f4122]', details: 'ICT Sem 4 • Listening to Chill Lofi Beats' },
+    { name: '🎒 Kabir (Hoodie)', badge: 'Chai break pending ☕', color: 'bg-[#58569e]', noteColor: 'bg-[#e2dfff] text-[#58569e]', details: 'CSE Sem 6 • Debugging Red-Black Tree Code' },
+    { name: '🌸 Ananya (GoodNotes)', badge: 'Academic focus ⚡', color: 'bg-[#3d6846]', noteColor: 'bg-[#e8f4ed] text-[#3d6846]', details: 'B.Tech AI • iPad Pro Note Taking' },
+    { name: '👾 Rohan (Dev)', badge: 'Deploying to Prod 🚀', color: 'bg-[#9f4122]', noteColor: 'bg-[#ffe8df] text-[#9f4122]', details: 'Full Stack Dev • Docker Container Setup' },
+    { name: '✨ Tanya (UI Geek)', badge: 'Figma Wireframes 🎨', color: 'bg-[#ff8a65]', noteColor: 'bg-[#fdeae5] text-[#9f4122]', details: 'UI/UX Lead • Campus Mobile App Redesign' },
+    { name: '⚡ Zain (Linux)', badge: 'Hackathon Prep 🔥', color: 'bg-[#3d6846]', noteColor: 'bg-[#e8f4ed] text-[#3d6846]', details: 'Cybersecurity Club • Arch Linux Terminal' },
+    { name: '🌙 Meera (Sleepy)', badge: 'Morning Coffee ☕', color: 'bg-[#58569e]', noteColor: 'bg-[#e2dfff] text-[#58569e]', details: 'CSE Sem 4 • Reviewing Sorting Algorithms' }
+  ];
+
+  // --- THEME SWITCHER LOGIC ---
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const root = document.documentElement;
+    if (savedTheme === 'dark') {
+      root.classList.add('dark');
+      updateThemeBtn(true);
+    } else {
+      root.classList.remove('dark');
+      updateThemeBtn(false);
+    }
+  }
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const isDark = root.classList.contains('dark');
+    if (isDark) {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      updateThemeBtn(false);
+      showToast('☀️ Light mode active');
+    } else {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      updateThemeBtn(true);
+      showToast('🌙 Dark mode active');
+    }
+  }
+
+  function updateThemeBtn(isDark) {
+    const label = document.getElementById('theme-toggle-label');
+    const icon = document.getElementById('theme-toggle-icon');
+    if (isDark) {
+      if (label) label.textContent = 'Light Mode';
+      if (icon) icon.textContent = '☀️';
+    } else {
+      if (label) label.textContent = 'Dark Mode';
+      if (icon) icon.textContent = '🌙';
+    }
+  }
+
+  initTheme();
+
+  // --- TOAST NOTIFICATIONS ---
+  function showToast(msg) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast-enter pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-2xl bg-[#231917] text-white border border-[#ff8a65]/40 shadow-2xl text-xs font-mono font-bold';
+    toast.innerHTML = `<span>${msg}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
+  }
+
+  // --- CLASSROOM OCCUPANCY SIMULATOR ---
+  function updateStudentPositions(val) {
+    const percentEl = document.getElementById('influx-percent');
+    if (percentEl) percentEl.textContent = val + '% Full';
+
+    // Calculate how many seats should be filled out of 8 visible desks
+    const filledCount = Math.round((val / 100) * 8);
+
+    for (let i = 1; i <= 8; i++) {
+      const avatar = document.getElementById(`avatar-${i}`);
+      if (!avatar) continue;
+
+      if (i <= filledCount) {
+        avatar.style.opacity = '1';
+        avatar.style.transform = 'scale(1) translateY(0)';
+        avatar.style.pointerEvents = 'auto';
+      } else {
+        avatar.style.opacity = '0.2';
+        avatar.style.transform = 'scale(0.85) translateY(-6px)';
+      }
+    }
+
+    // Update seating ticker
+    const ticker = document.getElementById('seats-claimed-ticker');
+    const acoustics = document.getElementById('acoustics-ticker');
+
+    if (ticker) {
+      const totalClaimed = Math.round((val / 100) * 16);
+      ticker.textContent = `● Seats Claimed: ${totalClaimed} / 16 (${val}% Capacity)`;
+    }
+
+    if (acoustics) {
+      if (val < 25) {
+        acoustics.textContent = 'Acoustics: Pin-drop Quiet 🤫';
+      } else if (val < 60) {
+        acoustics.textContent = 'Acoustics: Chill Study Ambience 🎧';
+      } else if (val < 85) {
+        acoustics.textContent = 'Acoustics: Active Group Discussion 💬';
+      } else {
+        acoustics.textContent = 'Acoustics: High Energy Lecture ⚡';
+      }
+    }
+  }
+
+  function changeSimSubject(subjCode) {
+    const title = document.getElementById('smartboard-title');
+    const prof = document.getElementById('smartboard-prof');
+
+    if (subjCode === 'CSE-202') {
+      if (title) title.textContent = 'SMART BOARD: Data Structures & Algorithms (CSE-202)';
+      if (prof) prof.textContent = 'Prof. Palak Shah Active';
+    } else if (subjCode === 'CSE-305') {
+      if (title) title.textContent = 'SMART BOARD: Cloud Computing & Microservices (CSE-305)';
+      if (prof) prof.textContent = 'Dr. Nilesh Patel Active';
+    } else if (subjCode === 'ICT-101') {
+      if (title) title.textContent = 'SMART BOARD: Web Architecture & UI Design (ICT-101)';
+      if (prof) prof.textContent = 'Prof. Palak Shah Active';
+    }
+    showToast(`Smart Board updated to ${subjCode} lecture mode!`);
+  }
+
+  function showSeatInfo(idx) {
+    const student = STUDENTS[idx];
+    if (student) {
+      showToast(`🪑 ${student.name} • ${student.details}`);
+    }
+  }
+
+  // --- FLOOR DIRECTORY & ROOM FILTERING ---
+  function renderRooms() {
+    const grid = document.getElementById('rooms-grid');
+    if (!grid) return;
+
+    const filtered = ROOMS_DATA.filter(r => r.bld === activeBuilding && r.floor === activeFloor);
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-full text-center py-12 bg-white/50 dark:bg-white/5 rounded-2xl border border-dashed border-[#ddc0b8]">
+          <p class="font-mono text-sm text-[#56423c] dark:text-[#ddc0b8]">No specific rooms listed for this floor in current database.</p>
+          <button onclick="setFloor(2)" class="mt-3 px-4 py-2 bg-[#9f4122] text-white font-mono text-xs rounded-xl font-bold">View 2nd Floor (Prof. Palak Shah)</button>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(r => `
+      <div class="room-card warm-card rounded-2xl p-5 border-2 ${r.featured ? '!border-[#9f4122]' : 'border-transparent'} transition-all">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-lg font-heading font-extrabold text-[#2d2422] dark:text-white">${r.name}</span>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${r.statusBg}">${r.status}</span>
+        </div>
+        <p class="text-xs text-[#56423c] dark:text-[#ddc0b8] mb-3">${r.info}</p>
+        <div class="flex items-center justify-between text-xs font-mono text-[#89726b] dark:text-slate-400">
+          <span>Cap: ${r.capacity} • ${r.freeUntil}</span>
+          <button class="text-[#9f4122] dark:text-[#ff8a65] font-bold hover:underline" onclick="openDirectionsModal('${r.id}')">Get Directions 🚶</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function switchBuilding(bld) {
+    activeBuilding = bld;
+    const bhanwarTab = document.getElementById('bhanwar-tab');
+    const mainTab = document.getElementById('main-tab');
+
+    if (bld === 'bhanwar') {
+      bhanwarTab.classList.add('border-[#9f4122]', 'bg-white', 'dark:bg-[#241a18]');
+      bhanwarTab.classList.remove('border-[#ddc0b8]/50', 'bg-[#fff1ed]', 'dark:bg-[#1a1210]');
+      mainTab.classList.remove('border-[#9f4122]', 'bg-white', 'dark:bg-[#241a18]');
+      mainTab.classList.add('border-[#ddc0b8]/50', 'bg-[#fff1ed]', 'dark:bg-[#1a1210]');
+    } else {
+      mainTab.classList.add('border-[#9f4122]', 'bg-white', 'dark:bg-[#241a18]');
+      mainTab.classList.remove('border-[#ddc0b8]/50', 'bg-[#fff1ed]', 'dark:bg-[#1a1210]');
+      bhanwarTab.classList.remove('border-[#9f4122]', 'bg-white', 'dark:bg-[#241a18]');
+      bhanwarTab.classList.add('border-[#ddc0b8]/50', 'bg-[#fff1ed]', 'dark:bg-[#1a1210]');
+    }
+
+    renderRooms();
+  }
+
+  function setFloor(floorNum) {
+    activeFloor = floorNum;
+    const btns = document.querySelectorAll('.floor-btn');
+    btns.forEach((btn, idx) => {
+      if (idx === floorNum) {
+        btn.classList.add('bg-[#9f4122]', 'text-white', 'shadow-sm');
+        btn.classList.remove('bg-white', 'dark:bg-white/5', 'text-[#56423c]', 'dark:text-slate-300');
+      } else {
+        btn.classList.remove('bg-[#9f4122]', 'text-white', 'shadow-sm');
+        btn.classList.add('bg-white', 'dark:bg-white/5', 'text-[#56423c]', 'dark:text-slate-300');
+      }
+    });
+    renderRooms();
+  }
+
+  function filterCards(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) {
+      renderRooms();
+      return;
+    }
+    const grid = document.getElementById('rooms-grid');
+    const matched = ROOMS_DATA.filter(r => 
+      r.name.toLowerCase().includes(q) || 
+      r.id.toLowerCase().includes(q) || 
+      r.info.toLowerCase().includes(q) ||
+      r.incharge.toLowerCase().includes(q)
+    );
+
+    if (matched.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-full text-center py-8">
+          <p class="font-mono text-xs text-[#89726b] dark:text-slate-400">No rooms matching "${query}". Try searching "Palak Shah", "LH-22", or "B-201".</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = matched.map(r => `
+      <div class="room-card warm-card rounded-2xl p-5 border-2 ${r.featured ? '!border-[#9f4122]' : 'border-transparent'} transition-all">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-lg font-heading font-extrabold text-[#2d2422] dark:text-white">${r.name}</span>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${r.statusBg}">${r.status}</span>
+        </div>
+        <p class="text-xs text-[#56423c] dark:text-[#ddc0b8] mb-3">${r.info}</p>
+        <div class="flex items-center justify-between text-xs font-mono text-[#89726b] dark:text-slate-400">
+          <span>Cap: ${r.capacity} • Floor ${r.floor}</span>
+          <button class="text-[#9f4122] dark:text-[#ff8a65] font-bold hover:underline" onclick="openDirectionsModal('${r.id}')">Get Directions 🚶</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function handleGlobalSearch(query) {
+    filterCards(query);
+  }
+
+  function quickAnchorSearch(term) {
+    const bar = document.getElementById('hero-search-bar');
+    if (bar) bar.value = term;
+    filterCards(term);
+    document.getElementById('campus-map').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function executeSearch() {
+    const val = document.getElementById('hero-search-bar').value;
+    filterCards(val);
+    document.getElementById('campus-map').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // --- EMPTY STUDY ROOM RADAR ---
+  function renderRadarCards() {
+    const container = document.getElementById('radar-cards-grid');
+    if (!container) return;
+
+    container.innerHTML = RADAR_ITEMS.map((item, index) => `
+      <div class="warm-card rounded-2xl p-5 transition-all">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xl font-heading font-extrabold text-[#2d2422] dark:text-white">${item.name}</span>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${item.statusClass}">${item.status}</span>
+        </div>
+        <p class="text-xs text-[#56423c] dark:text-[#ddc0b8] mb-3">${item.text}</p>
+        <div class="flex items-center justify-between pt-3 border-t border-[#ddc0b8]/30 dark:border-white/5 text-xs font-mono">
+          <span class="text-[#3d6846] dark:text-[#bfeec3] font-bold" id="radar-votes-${index}">${item.accuracy}</span>
+          ${item.emptyBtn === 'Claim Seat' ? 
+            `<button class="px-3 py-1 rounded-lg bg-[#e2dfff] hover:bg-[#c3c0ff] text-[#58569e] font-bold border border-[#c3c0ff] transition active:scale-95" onclick="openClaimSeatModal('${item.name}')">Claim Seat</button>` :
+            `<button class="px-3 py-1 rounded-lg bg-[#e8f4ed] hover:bg-[#bfeec3] text-[#3d6846] font-bold border border-[#bfeec3] transition active:scale-95" onclick="voteRadarItem(${index})">${item.emptyBtn}</button>`
+          }
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function voteRadarItem(idx) {
+    RADAR_ITEMS[idx].votes += 1;
+    RADAR_ITEMS[idx].emptyBtn = '👍 Verified!';
+    RADAR_ITEMS[idx].accuracy = `96% Accuracy (${RADAR_ITEMS[idx].votes} votes)`;
+    userKarma += 5;
+    updateKarmaDisplay();
+    renderRadarCards();
+    showToast('👍 Slot Verified! +5 Spotter Karma tokens earned!');
+  }
+
+  function updateKarmaDisplay() {
+    const el = document.getElementById('header-karma-count');
+    if (el) el.textContent = `${userKarma} Karma`;
+  }
+
+  // --- WAYFINDING DIRECTIONS MODAL LOGIC ---
+  function openDirectionsModal(roomId) {
+    const modal = document.getElementById('navigation-modal');
+    const room = ROOMS_DATA.find(r => r.id === roomId) || {
+      id: roomId,
+      name: roomId,
+      bld: 'bhanwar',
+      floor: 2,
+      info: 'Lab B-201 • Prof. Palak Shah ICT Coordinator Desk',
+      incharge: 'Prof. Palak Shah'
+    };
+
+    const titleEl = document.getElementById('modal-room-title');
+    const subEl = document.getElementById('modal-room-subtitle');
+    const stepsEl = document.getElementById('modal-steps-container');
+    const svgLabel = document.getElementById('svg-target-label');
+
+    if (titleEl) titleEl.textContent = `Directions to ${room.name}`;
+    if (subEl) subEl.textContent = `${room.info} • Floor ${room.floor}`;
+    if (svgLabel) svgLabel.textContent = room.id;
+
+    if (stepsEl) {
+      stepsEl.innerHTML = `
+        <div class="flex items-start gap-3 p-2.5 rounded-xl bg-[#fff8f6] dark:bg-[#1f1513] border border-[#ddc0b8]/40">
+          <span class="w-6 h-6 rounded-full bg-[#9f4122] text-white flex items-center justify-center font-bold text-[10px] shrink-0">1</span>
+          <div>
+            <b class="text-[#2d2422] dark:text-white">Enter ${room.bld === 'bhanwar' ? 'Bhanwar Building Main Entrance' : 'Main Building Entrance'}</b>
+            <p class="text-[11px] text-[#89726b] dark:text-slate-400">Pass security desk at Ground Floor level.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-2.5 rounded-xl bg-[#fff8f6] dark:bg-[#1f1513] border border-[#ddc0b8]/40">
+          <span class="w-6 h-6 rounded-full bg-[#9f4122] text-white flex items-center justify-center font-bold text-[10px] shrink-0">2</span>
+          <div>
+            <b class="text-[#2d2422] dark:text-white">Take North Elevator or Central Stairs</b>
+            <p class="text-[11px] text-[#89726b] dark:text-slate-400">Head up to Floor level ${room.floor}.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-2.5 rounded-xl bg-[#fff8f6] dark:bg-[#1f1513] border border-[#ddc0b8]/40">
+          <span class="w-6 h-6 rounded-full bg-[#3d6846] text-white flex items-center justify-center font-bold text-[10px] shrink-0">3</span>
+          <div>
+            <b class="text-[#2d2422] dark:text-white">Turn Right on Corridor</b>
+            <p class="text-[11px] text-[#89726b] dark:text-slate-400">Arrive at ${room.name} (${room.incharge}). Door clearly marked with green tag.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    if (modal) {
+      modal.classList.remove('hidden');
+    }
+  }
+
+  function closeDirectionsModal() {
+    const modal = document.getElementById('navigation-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function copyRouteLink() {
+    showToast('📋 Navigation pathway link copied to clipboard!');
+  }
+
+  // --- REPORT FREE SLOT MODAL LOGIC ---
+  function openReportSlotModal() {
+    const modal = document.getElementById('report-slot-modal');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeReportSlotModal() {
+    const modal = document.getElementById('report-slot-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function handleReportSlotSubmit(e) {
+    e.preventDefault();
+    const bld = document.getElementById('report-bld').value;
+    const floor = document.getElementById('report-floor').value;
+    const room = document.getElementById('report-room').value;
+    const duration = document.getElementById('report-duration').value;
+    const outlets = document.getElementById('report-outlets').value;
+    const notes = document.getElementById('report-notes').value || 'Verified by student spotter';
+
+    // Add new slot to Radar
+    RADAR_ITEMS.unshift({
+      id: room,
+      name: room,
+      bld: `${bld} ${floor}`,
+      status: 'Empty Now 🟢',
+      statusClass: 'bg-[#e8f4ed] text-[#3d6846] border-[#bfeec3]',
+      text: `${bld} ${floor} • Free until ${duration} • ${outlets} Outlets • ${notes}`,
+      accuracy: '100% Verified (1 vote)',
+      votes: 1,
+      emptyBtn: '👍 Verified!'
+    });
+
+    userKarma += 25;
+    updateKarmaDisplay();
+    renderRadarCards();
+    closeReportSlotModal();
+    showToast(`⚡ Free slot reported for ${room}! You earned +25 Spotter Karma!`);
+  }
+
+  // --- CLAIM SEAT MODAL LOGIC ---
+  function openClaimSeatModal(roomName) {
+    const modal = document.getElementById('claim-seat-modal');
+    const nameEl = document.getElementById('claim-modal-room-name');
+    if (nameEl) nameEl.textContent = `Reserve Desk at ${roomName}`;
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeClaimSeatModal() {
+    const modal = document.getElementById('claim-seat-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function handleClaimSeatSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('claim-name').value;
+    const duration = document.getElementById('claim-duration').value;
+    closeClaimSeatModal();
+    showToast(`🎫 Digital Study Pass Generated for ${name}! Reserved for ${duration}.`);
+  }
+
+  // --- FACULTY CONSULTATION BOOKING MODAL LOGIC ---
+  function openFacultyBookingModal(profName, cabinName) {
+    const modal = document.getElementById('faculty-booking-modal');
+    const profEl = document.getElementById('booking-modal-prof-name');
+    const cabinEl = document.getElementById('booking-modal-cabin');
+
+    if (profEl) profEl.textContent = `Book Consultation with ${profName}`;
+    if (cabinEl) cabinEl.textContent = cabinName;
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeFacultyBookingModal() {
+    const modal = document.getElementById('faculty-booking-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function handleFacultyBookingSubmit(e) {
+    e.preventDefault();
+    const student = document.getElementById('booking-student').value;
+    const slot = document.getElementById('booking-slot').value;
+    closeFacultyBookingModal();
+    showToast(`📜 Appointment Confirmed for ${student} at ${slot}! Ticket saved.`);
+  }
+
+  // --- INITIAL RENDER ---
+  renderRooms();
+  renderRadarCards();
+  updateStudentPositions(55);
+</script>
+
+</body>
+</html>
